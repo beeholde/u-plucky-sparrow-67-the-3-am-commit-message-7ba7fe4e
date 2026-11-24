@@ -32,6 +32,12 @@ def main() -> None:
     text = check(LINE)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(text, encoding="utf-8", newline="")
+    # Round-trip: the file the grader gates must be byte-identical
+    # to the line we checked, so a stray newline or re-encoding
+    # can never silently change the entry.
+    written = OUT.read_text(encoding="utf-8")
+    if written != text:
+        raise ValueError("round-trip mismatch in /output/entry.txt")
     print(f"wrote {len(text)} characters to {OUT}")
 
 
